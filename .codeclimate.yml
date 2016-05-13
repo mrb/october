@@ -17,7 +17,8 @@ ratings:
     - "**.css"
 
 exclude_paths:
+  - modules/backend/database/migrations/**/*
   - modules/backend/lang/**/*
   - modules/system/assets/vendor/**/*
-  - themes/demo/assets/vendor/**/*
+  - themes/**/*
   - tests/**/*
