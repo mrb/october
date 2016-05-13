@@ -26,6 +26,7 @@ class CmsController extends ControllerBase
     public function __construct()
     {
         $this->extendableConstruct();
+        self::$action = $action = isset($params[2]) ? $this->parseAction($params[2]) : 'index';
     }
 
     /**
@@ -45,5 +46,14 @@ class CmsController extends ControllerBase
     public function run($url = '/')
     {
         return App::make('Cms\Classes\Controller')->run($url);
+    }
+
+    protected function parseAction($actionName)
+    {
+        if (strpos($actionName, '-') !== false) {
+            return camel_case($actionName);
+        }
+
+        return $actionName;
     }
 }
