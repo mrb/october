@@ -46,29 +46,59 @@ class CmsController extends ControllerBase
     public function run($url = '/')
     {
         return App::make('Cms\Classes\Controller')->run($url);
-    }
 
-    /**
-     * Checks the request data / headers for a valid CSRF token.
-     * Returns false if a valid token is not found. Override this
-     * method to disable the check.
-     * @return bool
-     */
-    protected function verifyCsrfToken()
-    {
-        if (!Config::get('cms.enableCsrfProtection')) {
-            return true;
+        if (strpos($handler, '::')) {
+            list($widgetName, $handlerName) = explode('::', $handler);
+
+            /*
+             * Execute the page action so widgets are initialized
+             */
+            $this->pageAction();
+
+            if ($this->fatalError) {
+                throw new SystemException($this->fatalError);
+            }
+
+            if (!isset($this->widget->{$widgetName})) {
+                throw new SystemException(Lang::get('backend::lang.widget.not_bound', ['name'=>$widgetName]));
+            }
+
+            if (($widget = $this->widget->{$widgetName}) && method_exists($widget, $handlerName)) {
+                $result = call_user_func_array([$widget, $handlerName], $this->params);
+                return ($result) ?: true;
+            }
         }
+        else {
+            /*
+             * Process page specific handler (index_onSomething)
+             */
+            $pageHandler = $this->action . '_' . $handler;
 
-        if (in_array(Request::method(), ['HEAD', 'GET', 'OPTIONS'])) {
-            return true;
+            if ($this->methodExists($pageHandler)) {
+                $result = call_user_func_array([$this, $pageHandler], $this->params);
+                return ($result) ?: true;
+            }
+
+            /*
+             * Process page global handler (onSomething)
+             */
+            if ($this->methodExists($handler)) {
+                $result = call_user_func_array([$this, $handler], $this->params);
+                return ($result) ?: true;
+            }
+
+            /*
+             * Cycle each widget to locate a usable handler (widget::onSomething)
+             */
+            $this->suppressView = true;
+            $this->execPageAction($this->action, $this->params);
+
+            foreach ((array) $this->widget as $widget) {
+                if (method_exists($widget, $handler)) {
+                    $result = call_user_func_array([$widget, $handler], $this->params);
+                    return ($result) ?: true;
+                }
+            }
         }
-
-        $token = Request::input('_token') ?: Request::header('X-CSRF-TOKEN');
-
-        return \Symfony\Component\Security\Core\Util\StringUtils::equals(
-            Session::getToken(),
-            $token
-        );
     }
 }
