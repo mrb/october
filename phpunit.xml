@@ -10,6 +10,11 @@
          stopOnFailure="false"
          syntaxCheck="false"
 >
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">modules/cms/classes</directory>
+    </whitelist>
+  </filter>
     <testsuites>
         <testsuite name="October CMS Test Suite">
             <directory>./tests/unit</directory>
@@ -18,6 +23,9 @@
             <directory>./vendor/october/rain/tests</directory>
         </testsuite>
     </testsuites>
+    <logging>
+      <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
     <php>
         <env name="APP_ENV" value="testing" />
         <env name="CACHE_DRIVER" value="array" />
