@@ -1,0 +1,21 @@
+engines:
+  css-lint:
+    enabled: true
+  phpcodesniffer:
+    enabled: true
+  phpmd:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - php
+
+ratings:
+  paths:
+    - "**.php"
+    - "**.css"
+
+exclude_paths:
+  - modules/backend/lang/**/*
+  - tests/**/*
