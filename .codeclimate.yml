@@ -18,4 +18,6 @@ ratings:
 
 exclude_paths:
   - modules/backend/lang/**/*
+  - modules/system/assets/vendor/**/*
+  - themes/demo/assets/vendor/**/*
   - tests/**/*
