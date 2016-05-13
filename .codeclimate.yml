@@ -1,5 +1,5 @@
 engines:
-  css-lint:
+  csslint:
     enabled: true
   phpcodesniffer:
     enabled: true
