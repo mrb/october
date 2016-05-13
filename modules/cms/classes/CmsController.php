@@ -48,12 +48,27 @@ class CmsController extends ControllerBase
         return App::make('Cms\Classes\Controller')->run($url);
     }
 
-    protected function parseAction($actionName)
+    /**
+     * Checks the request data / headers for a valid CSRF token.
+     * Returns false if a valid token is not found. Override this
+     * method to disable the check.
+     * @return bool
+     */
+    protected function verifyCsrfToken()
     {
-        if (strpos($actionName, '-') !== false) {
-            return camel_case($actionName);
+        if (!Config::get('cms.enableCsrfProtection')) {
+            return true;
         }
 
-        return $actionName;
+        if (in_array(Request::method(), ['HEAD', 'GET', 'OPTIONS'])) {
+            return true;
+        }
+
+        $token = Request::input('_token') ?: Request::header('X-CSRF-TOKEN');
+
+        return \Symfony\Component\Security\Core\Util\StringUtils::equals(
+            Session::getToken(),
+            $token
+        );
     }
 }
