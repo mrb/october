@@ -3,8 +3,12 @@ engines:
     enabled: true
   phpcodesniffer:
     enabled: true
+    exclude_paths:
+      - modules/cms/classes/CmsController.php
   phpmd:
     enabled: true
+    exclude_paths:
+      - modules/cms/classes/CmsController.php
   duplication:
     enabled: true
     config:
