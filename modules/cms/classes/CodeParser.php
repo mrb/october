@@ -1,8 +1,28 @@
 <?php namespace Cms\Classes;
 
+use File;
+use Lang;
+use Cache;
+use Config;
+use SystemException;
 
+/**
+ * Parses the PHP code section of CMS objects.
+ *
+ * @package october\cms
+ * @author Alexey Bobkov, Samuel Georges
+ */
 class CodeParser
 {
+    /**
+     * @var \Cms\Classes\CmsCompoundObject A reference to the CMS object being parsed.
+     */
+    protected $object;
+
+    /**
+     * @var string Contains a path to the CMS object's file being parsed.
+     */
+    protected $filePath;
 
     /**
      * @var mixed The internal cache, keeps parsed object information during a request.
@@ -118,60 +138,29 @@ class CodeParser
 
         return self::$cache[$this->filePath] = $result;
     }
-      /**
-       * @var \Cms\Classes\CmsCompoundObject A reference to the CMS object being parsed.
-       */
-      protected $object;
 
-      /**
-       * @var string Contains a path to the CMS object's file being parsed.
-       */
-      protected $filePath;
+    /**
+     * Runs the object's PHP file and returns the corresponding object.
+     * @param \Cms\Classes\Page $page Specifies the CMS page.
+     * @param \Cms\Classes\Layout $layout Specifies the CMS layout.
+     * @param \Cms\Classes\Controller $controller Specifies the CMS controller.
+     * @return mixed
+     */
+    public function source($page, $layout, $controller)
+    {
+        $data = $this->parse();
+        $className = $data['className'];
 
-      /**
-       * @var mixed The internal cache, keeps parsed object information during a request.
-       */
-      static protected $cache = [];
+        if (!class_exists($className)) {
+            require_once $data['filePath'];
+        }
 
-      /**
-       * @var string Key for the parsed PHP file information cache.
-       */
-      protected $dataCacheKey = 'cms-php-file-data';
+        if (!class_exists($className) && ($data = $this->handleCorruptCache())) {
+            $className = $data['className'];
+        }
 
-      /**
-       * Creates the class instance
-       * @param \Cms\Classes\CmsCompoundObject A reference to a CMS object to parse.
-       */
-      public function __construct(CmsCompoundObject $object)
-      {
-          $this->object = $object;
-          $this->filePath = $object->getFullPath();
-      }
-
-
-
-      /**
-       * Runs the object's PHP file and returns the corresponding object.
-       * @param \Cms\Classes\Page $page Specifies the CMS page.
-       * @param \Cms\Classes\Layout $layout Specifies the CMS layout.
-       * @param \Cms\Classes\Controller $controller Specifies the CMS controller.
-       * @return mixed
-       */
-      public function source($page, $layout, $controller)
-      {
-          $data = $this->parse();
-          $className = $data['className'];
-
-          if (!class_exists($className)) {
-              require_once $data['filePath'];
-          }
-
-          if (!class_exists($className) && ($data = $this->handleCorruptCache())) {
-              $className = $data['className'];
-          }
-
-          return new $className($page, $layout, $controller);
-      }
+        return new $className($page, $layout, $controller);
+    }
 
     /**
      * In some rare cases the cache file will not contain the class
