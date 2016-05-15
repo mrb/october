@@ -5,6 +5,7 @@ engines:
     enabled: true
     exclude_paths:
       - modules/cms/classes/CmsController.php
+      - modules/cms/classes/CodeParser.php
   phpmd:
     enabled: true
     exclude_paths:
