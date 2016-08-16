@@ -11,4 +11,4 @@ install:
 
 before_script: git reset --hard HEAD
 
-script: vendor/bin/phpunit && CODECLIMATE_REPO_TOKEN=69265fde1c5e1738eba2a694af0936b331785a4817495337f0caeb096f1f187d ./vendor/bin/test-reporter
+script: vendor/bin/phpunit && ./vendor/bin/test-reporter
