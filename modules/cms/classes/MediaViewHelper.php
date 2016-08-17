@@ -82,12 +82,12 @@ class MediaViewHelper
         }
 
         $controller = Controller::getController();
-        Cache::clear();
         if (!$controller) {
             throw new ApplicationException('Media tags can only be processed for front-end requests.');
         }
 
         $partial = Partial::loadCached($controller->getTheme(), $name);
+        Cache::clear();
 
         return $this->playerPartialFlags[$name] = !!$partial;
     }
