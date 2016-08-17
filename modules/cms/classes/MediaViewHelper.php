@@ -42,6 +42,7 @@ class MediaViewHelper
 
         $tagDefinitions = [
             'audio' => '/data\-audio\s*=\s*"([^"]+)"/',
+            'img' => '/data\-image\s*=\s*"([^"]+)"/',
             'video' => '/data\-video\s*=\s*"([^"]+)"/'
         ];
 
@@ -81,6 +82,7 @@ class MediaViewHelper
         }
 
         $controller = Controller::getController();
+        Cache::clear();
         if (!$controller) {
             throw new ApplicationException('Media tags can only be processed for front-end requests.');
         }
