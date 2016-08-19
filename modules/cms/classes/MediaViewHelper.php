@@ -42,7 +42,6 @@ class MediaViewHelper
 
         $tagDefinitions = [
             'audio' => '/data\-audio\s*=\s*"([^"]+)"/',
-            'img' => '/data\-image\s*=\s*"([^"]+)"/',
             'video' => '/data\-video\s*=\s*"([^"]+)"/'
         ];
 
@@ -87,7 +86,7 @@ class MediaViewHelper
         }
 
         $partial = Partial::loadCached($controller->getTheme(), $name);
-        Cache::clear();
+        Cache::clearTwig();
 
         return $this->playerPartialFlags[$name] = !!$partial;
     }
@@ -101,6 +100,14 @@ class MediaViewHelper
 
             case 'audio':
                 return '<audio src="'.e($src).'" controls></audio>';
+            break;
+
+            case 'gif':
+                return '<img src="'.e($src).'"></img>';
+            break;
+
+            case 'article':
+                return '<article>'.e($src).'</article>';
             break;
         }
     }
