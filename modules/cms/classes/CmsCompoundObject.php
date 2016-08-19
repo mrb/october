@@ -22,15 +22,6 @@ use ApplicationException;
 class CmsCompoundObject extends CmsObject
 {
     /**
-     * Evaluates PHP content in order to detect syntax errors.
-     * The method handles PHP errors and throws exceptions.
-     */
-    public function validate($php)
-    {
-        eval('?>'.$php);
-    }
-
-    /**
      * @var array Initialized components defined in the template file.
      */
     public $components = [];
