@@ -21,6 +21,15 @@ class CmsObject extends HalcyonModel implements CmsObjectContract
     use \October\Rain\Halcyon\Traits\Validation;
 
     /**
+     * Evaluates PHP content in order to detect syntax errors.
+     * The method handles PHP errors and throws exceptions.
+     */
+    public function validate($php)
+    {
+        eval('?>'.$php);
+    }
+
+    /**
      * @var array The rules to be applied to the data.
      */
     public $rules = [];
