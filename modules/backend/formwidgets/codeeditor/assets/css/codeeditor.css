@@ -1,3 +1,4 @@
+[type=text] {color: red}
 .field-codeeditor {width:100%;position:relative;border:2px solid #e0e0e0;-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px}
 .field-codeeditor textarea{opacity:0;filter:alpha(opacity=0)}
 .field-codeeditor.editor-focus{border:2px solid #808c8d}
